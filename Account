@@ -1,0 +1,34 @@
+package qn1_accounts;
+
+public abstract class Account implements Statement {
+    // Protected attributes matching the '#' symbol in the UML diagram
+    protected String accountNo;
+    protected double balance;
+
+    // Public constructor matching the '+' symbol
+    public Account(String accountNo, double opening) {
+        this.accountNo = accountNo;
+        this.balance = opening;
+    }
+
+    // Public deposit method
+    public void deposit(double amount) {
+        if (amount > 0) {
+            this.balance += amount;
+        }
+    }
+
+    // Abstract method placeholder forcing concrete implementation by subclasses
+    public abstract boolean withdraw(double amount);
+
+    // Public getter method for balance access
+    public double getBalance() {
+        return this.balance;
+    }
+
+    // Sensible concrete implementation of the interface method contract
+    @Override
+    public String generateStatement() {
+        return "Account Number: " + accountNo + " | Current Balance: UGX " + balance;
+    }
+}
