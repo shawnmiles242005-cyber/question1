@@ -1,0 +1,58 @@
+package qn1_accounts;
+
+public class BankingApplication {
+    public static void main(String[] args) {
+        System.out.println("=== STARTING COMMUNITY BANK TEST SUITE ===\n");
+
+        // 1. Create a Customer
+        Customer customer = new Customer("Kemigisha Jackilne");
+
+        // 2. Instantiate a Savings Account (AccNo, Opening Balance, Interest Rate)
+        SavingsAccount savings = new SavingsAccount("SAV-001", 7500000.0, 5.0);
+        
+        // 3. Instantiate a Current Account (AccNo, Opening Balance, Overdraft Limit)
+        CurrentAccount current = new CurrentAccount("CUR-002", 200000.0, 100000.0);
+
+        // 4. Attach accounts to our customer aggregate
+        customer.addAccount(savings);
+        customer.addAccount(current);
+
+        // 5. Test Deposit operations
+        System.out.println("--- Executing Deposits ---");
+        savings.deposit(50000.0); // Balance becomes 7,550,000
+        current.deposit(10000.0);  // Balance becomes 210,000
+        System.out.println(savings.generateStatement());
+        System.out.println(current.generateStatement());
+
+        // 6. Test Savings Account Withdrawal Constraints (Cannot go negative)
+        System.out.println("\n--- Testing Savings Withdrawal Limits ---");
+        boolean saveWithdraw1 = savings.withdraw(300000.0); // Allowed
+        System.out.println("Withdraw UGX 300,000: " + (saveWithdraw1 ? "SUCCESS" : "FAILED"));
+        
+        boolean saveWithdraw2 = savings.withdraw(400000.0); // Refused (Balance is 250,000)
+        System.out.println("Withdraw UGX 400,000: " + (saveWithdraw2 ? "SUCCESS" : "FAILED"));
+        System.out.println(savings.generateStatement());
+
+        // 7. Test Current Account Withdrawal Constraints (Can go negative up to overdraft)
+        System.out.println("\n--- Testing Current Overdraft Limits ---");
+        boolean curWithdraw1 = current.withdraw(255000.0); // Allowed (Drops balance to -45,000)
+        System.out.println("Withdraw UGX 255,000: " + (curWithdraw1 ? "SUCCESS" : "FAILED"));
+        
+        boolean curWithdraw2 = current.withdraw(300000.0); // Refused (Exceeds -100,000 overdraft cap)
+        System.out.println("Withdraw UGX 300,000: " + (curWithdraw2 ? "SUCCESS" : "FAILED"));
+        System.out.println(current.generateStatement());
+
+        // 8. Test Interest Accrual on Savings
+        System.out.println("\n--- Testing Savings Interest Accumulation ---");
+        System.out.println("Before Interest: " + savings.generateStatement());
+        savings.addInterest(); // 5% of 250,000 = 12,500
+        System.out.println("After 5% Interest Added: " + savings.generateStatement());
+
+        // 9. Calculate and verify Customer Total Worth
+        System.out.println("\n--- Computing Aggregated Customer Valuation ---");
+        double worth = customer.totalWorth(); // 262,500 + (-40,000) = 222,500
+        System.out.printf("Total Financial Worth of %s: UGX %.2f\n", "Kemigisha Jackline", worth);
+        
+        System.out.println("\n=== TEST SUITE COMPLETED SUCCESSFULLY ===");
+    }
+}
