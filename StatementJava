@@ -1,0 +1,6 @@
+package qn1_accounts;
+
+public interface Statement {
+    // Abstract public method contract defined by the interface
+    String generateStatement();
+}
