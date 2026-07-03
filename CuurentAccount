@@ -1,0 +1,22 @@
+package qn1_accounts;
+
+public class CurrentAccount extends Account {
+    // Private attribute matching the '-' symbol
+    private double overdraft;
+
+    // Subclass constructor chaining up to the parent class super-constructor
+    public CurrentAccount(String accountNo, double opening, double overdraft) {
+        super(accountNo, opening);
+        this.overdraft = overdraft;
+    }
+
+    @Override
+    public boolean withdraw(double amount) {
+        // Business Rule: Allow negative balance up to the specified overdraft limit
+        if (this.balance - amount >= -this.overdraft) {
+            this.balance -= amount;
+            return true; // Withdrawal approved within safety margin
+        }
+        return false; // Withdrawal denied as it exceeds the absolute overdraft limit
+    }
+}
